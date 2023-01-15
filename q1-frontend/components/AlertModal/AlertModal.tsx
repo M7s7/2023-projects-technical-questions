@@ -1,16 +1,28 @@
-import { SetStateAction, Dispatch, FormEvent } from "react";
-import { TableContents } from "../Table/Table";
+import { send } from "process";
+import { SetStateAction, Dispatch, FormEvent, useState } from "react";
+import { TableContents, Alert } from "../Table/Table";
 
 interface AlertModalProps {
   useContents: Dispatch<SetStateAction<TableContents>>,
+  contents: contents
 }
 
-export default function AlertModal({useContents}: AlertModalProps) {
+export default function AlertModal({useContents, contents}: AlertModalProps) {
   function onSubmitEvent(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // hint: the alert given is at (e.target as any).elements[0].value - ignore typescript being annoying
-    console.log((e.target as any)[0].value);
+    const newAlert: Alert = {
+      alert: (e.target as any).elements[0].value,
+      status: "",
+      updates: []
+    }
+
+    const newContents: TableContents = {...contents,
+      rowContents: [...contents.rowContents].concat(newAlert)
+    } 
+
+    useContents(newContents)
   }
+
   
   return (
     <form data-testid='form' onSubmit={onSubmitEvent}>

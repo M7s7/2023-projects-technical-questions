@@ -18,3 +18,13 @@
     flex: 1 1 0px;
     flex-direction: column;
 }
+
+.update {
+    display: flex;
+    justify-content: space-between;
+}
+
+.date {
+    color: red;
+    font-size: 0.5em;
+}
