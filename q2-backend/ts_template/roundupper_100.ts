@@ -39,13 +39,13 @@ app.post("/entity", (req, res) => {
 // lasooable returns all the space animals a space cowboy can lasso given their name
 app.get("/lassoable", (req, res) => {
   try {
-    const cowboyName = req.body.cowboy_name
+    const cowboyName = req.query.cowboy_name
     const cowboy: any = spaceDatabase.filter((item) => {
       return (
         item.type === "space_cowboy" && item.metadata.name === cowboyName
       )
     })[0]
-  
+
     const cowboyLength = cowboy.metadata.lassoLength
     const cowboyLocation = cowboy.location
   
