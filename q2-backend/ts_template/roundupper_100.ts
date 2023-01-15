@@ -38,29 +38,30 @@ app.post("/entity", (req, res) => {
 
 // lasooable returns all the space animals a space cowboy can lasso given their name
 app.get("/lassoable", (req, res) => {
+  type unionCowboy = { type: "space_cowboy"; metadata: spaceCowboy; location: location }
+  type unionAnimal = { type: "space_animal"; metadata: spaceAnimal; location: location }
+
   try {
     const cowboyName = req.query.cowboy_name
-    const cowboy: any = spaceDatabase.filter((item) => {
+    const cowboy = spaceDatabase.find((item) => {
       return (
         item.type === "space_cowboy" && item.metadata.name === cowboyName
       )
-    })[0]
+    }) as unionCowboy
 
     const cowboyLength = cowboy.metadata.lassoLength
     const cowboyLocation = cowboy.location
   
-    const onlyAnimals = spaceDatabase.filter((item) => item.type === "space_animal")
-  
-    const AnimalsandReachable = onlyAnimals.filter((item) => {
+    const AnimalsandReachable = spaceDatabase.filter((item) => {
       const x = cowboyLocation.x - item.location.x
       const y = cowboyLocation.y - item.location.y
       const distance = Math.sqrt(x*x + y*y)
   
-      return distance <= cowboyLength 
-    })
+      return distance <= cowboyLength && item.type === "space_animal"
+    }) as unionAnimal[]
   
     const output = {
-      space_animals: AnimalsandReachable.map((item: any) => ({
+      space_animals: AnimalsandReachable.map((item: unionAnimal) => ({
           type: item.metadata.type,
           location: item.location
       }))
